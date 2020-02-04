@@ -6,7 +6,6 @@ void extendDJ()
     vert tmp;
     for (i=1;i<=P;i++)
     {
-        DIJsource[i]=i;
         dis[i]=0;
         heap.push({dis[i],i});
     }
@@ -28,7 +27,6 @@ void extendDJ()
             {
                 dis[e[j]]=dis[u]+len[j];
                 parent[e[j]]=u;
-                DIJsource[e[j]]=DIJsource[u];
                 heap.push({dis[e[j]],e[j]});
             }
             j=nex[j];
@@ -65,20 +63,14 @@ void extendKK()
             {
                 if (vis[u]) break;
                 vis[u]=1;
-                MTSTedge[++numMTSTe]={u,f[u],disp(b[u],b[f[u]])};
+                MTSTedge[++numMTSTe]={u,f[u]};
             }
             for (v=te[i].v;f[v]!=0;v=f[v])
             {
                 if (vis[v]) break;
                 vis[v]=1;
-                MTSTedge[++numMTSTe]={v,f[v],disp(b[v],b[f[v]])};
+                MTSTedge[++numMTSTe]={v,f[v]};
             }
         }
     }
-}
-
-void MTST()
-{
-    extendDJ();
-    extendKK();
 }
