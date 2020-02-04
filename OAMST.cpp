@@ -1,162 +1,382 @@
 #include "global.h"
-
-void dfs(int u)
+int dealpoint(Flute::Tree t)
 {
-    int j;
-    vis[u]=1;
-    siz[u]=1;
-    for (j=head[u];j>0;j=nex[j])
-    {
-        if (vis[e[j]]) continue;
-        dfs(e[j]);
-        siz[u]+=siz[e[j]];
-    }
-}
-void partition(int x)
-{
-    mar++;
-    //printf("part x mar: %d %d\n",x,mar);
-    //printf("part x: %d %d\n",b[x].x,b[x].y);
-    int sz,maxlen=0,maxidu,maxidj,THRESHOLD;
-    int num=0,numans=0,u,v,i,j,PP,QQ,XX[NP],YY[NP];
+    int u,i,j,numans,numN=0,cuti;
+    int XX[NP],YY[NP],color[NP];
     bool obflag=0;
-    vector<int> a;
-    obs obtem;
+    poi paa,pbb,pa,pb;
     OBTree ob;
-    poi pa,pb;
 
-    if (P<=50) THRESHOLD=INF;
-    if (P>50 && P<=100) THRESHOLD=P/2;
-    if (P>100 && P<=500) THRESHOLD=P/5;
-    if (P>500) THRESHOLD=P/10;
-    
-    a.clear();
-    a.push_back(x);
-    vis[x]=mar;
-    while ((!a.empty()) && obflag==0)
+    Flute::printtree(t);
+
+    for (i=0;i<t.deg*2-2;i++)
     {
-        u=*a.begin();
-        for (j=head[u];j>0;j=nex[j])
+        Flute::Branch u=t.branch[i];    
+        ansob.clear();
+        checknode({u.x,u.y,0},1);
+        numans=ansob.size();
+        if (numans>0)
         {
-            if (vis[e[j]]==mar) continue;
-            sz=siz[u];
-            if (e[j]<=P)
-                sz=min(sz,siz[e[j]]); 
-            sz=min(sz,P-sz);
-                //cout<<siz[u]<<' '<<siz[e[j]]<<' '<<sz<<endl;
-            //if (u>P || e[j]>P) sz=10;
-            //sz=10;
-            if (numblock[j]>0 && sz>2)
+            obflag=1;
+            initOBTreeNode(ob);
+            for (j=0;j<numans;j++)
             {
-                obflag=1;
-                ansob.clear();
-                checkedge({b[u].x,b[u].y},{b[e[j]].x,b[e[j]].y},1);
-                numans=ansob.size();
-                break;
+                obs obtem=oo[ansob[j]];
+                ob.xmin=min(obtem.x1,ob.xmin);
+                ob.xmax=max(obtem.x2,ob.xmax);
+                ob.ymin=min(obtem.y1,ob.ymin);
+                ob.ymax=max(obtem.y2,ob.ymax);    
             }
-            if (len[j]>maxlen && sz>2)
+            if (ob.xmax-ob.xmin<abs(u.x-v.x))
             {
-                maxlen=len[j];
-                maxidj=j;
-                maxidu=u;
+                pa={ob.xmin,ob.ymax};
+                pb={ob.xmax,ob.ymax};
+                if (disp(pa,{u.x,u.y,0})>disp(pb,{u.x,u.y,0}))
+                    swap(pa,pb);
+                paa={ob.xmin,ob.ymin};
+                pbb={ob.xmax,ob.ymin};
+                if (disp(paa,{u.x,u.y,0})>disp(pbb,{u.x,u.y,0}))
+                    swap(paa,pbb);
+                if (disp(paa,{u.x,u.y,0})+disp(pbb,{v.x,v.y,0})<disp(pa,{u.x,u.y,0})+disp(pb,{v.x,v.y,0}))
+                {
+                    pa=paa;
+                    pb=pbb;
+                }
             }
-            vis[e[j]]=mar;
-            a.push_back(e[j]);
+            else
+            {
+                pa={ob.xmin,ob.ymin};
+                pb={ob.xmin,ob.ymax};
+                if (disp(pa,{u.x,u.y,0})>disp(pb,{u.x,u.y,0}))
+                    swap(pa,pb);
+                paa={ob.xmax,ob.ymin};
+                pbb={ob.xmax,ob.ymax};
+                if (disp(paa,{u.x,u.y,0})>disp(pbb,{u.x,u.y,0}))
+                    swap(paa,pbb);
+                if (disp(paa,{u.x,u.y,0})+disp(pbb,{v.x,v.y,0})<disp(pa,{u.x,u.y,0})+disp(pb,{v.x,v.y,0}))
+                {
+                    pa=paa;
+                    pb=pbb;
+                }
+            }
+            //printf("papb: %d %d\n%d %d\n",pa.x,pa.y,pb.x,pb.y);
+            cuti=i;
+            break;
+        }    
+    }
+    printf("%d\n",obflag);
+    puts("------------------");
+    if (obflag==0)
+        for (i=0;i<t.deg*2-2;i++)
+        {
+            if (i==t.branch[i].n) continue;
+            Flute::Branch u=t.branch[i],v=t.branch[t.branch[i].n];    
+            poi a={u.x,u.y,0},b={v.x,v.y,0};
+            OAMSTedge[++numOAMSTe]={a,b};
         }
-        XX[num]=b[u].x;
-        YY[num++]=b[u].y;
-        a.erase(a.begin());
-    }   
-    if (obflag)
+    else
     {
-        v=e[j];
-        //printf("u,v,j: %d %d %d\n",u,v,j);
-        initOBTreeNode(ob);
-        for (i=0;i<1;i++) // 1 or numans check!
-        {
-            obtem=oo[ansob[i]];
-            ob.xmin=min(obtem.x1,ob.xmin);
-            ob.xmax=max(obtem.x2,ob.xmax);
-            ob.ymin=min(obtem.y1,ob.ymin);
-            ob.ymax=max(obtem.y2,ob.ymax);    
+        initedge();
+        memset(color,0,sizeof(color));
+        for (i=0;i<t.deg*2-2;i++)
+        {   
+            if (i==t.branch[i].n) continue;
+            if (i==cuti) continue;
+            Flute::Branch u=t.branch[i],v=t.branch[t.branch[i].n]; 
+            printf("edge: %d %d\n",i,t.branch[i].n);
+            add(i,t.branch[i].n,0);
+            add(t.branch[i].n,i,0);
         }
-        obtem={ob.xmin,ob.ymin,ob.xmax,ob.ymax};
-        blockedgepoint({b[u].x,b[u].y},{b[v].x,b[v].y},obtem,pa,pb);
-        //OAMSTedge[++numOAMSTe]={{b[u].x,b[u].y},pa};
-        //OAMSTedge[++numOAMSTe]={{b[v].x,b[v].y},pb};
+
+        vector<int> a;
+        a.push_back(cuti);
+        while (!a.empty())
+        {
+            u=*a.begin();
+            color[u]=1;
+            for (j=head[u];j>0;j=nex[j])
+            {
+                if (color[e[j]]!=0) continue;
+                a.push_back(e[j]);
+            }
+            a.erase(a.begin());
+        }
+        a.clear();
+        a.push_back(t.branch[cuti].n);
+        while (!a.empty())
+        {
+            u=*a.begin();
+            color[u]=2;
+            a.erase(a.begin());
+            for (j=head[u];j>0;j=nex[j])
+            {
+                if (color[e[j]]!=0) continue;
+                a.push_back(e[j]);
+            }
+        }
+        for (i=0;i<t.deg*2-2;i++)
+            printf("-------color: %d %d\n",i,color[i]);
+
+        numN=0;
+        for (i=0;i<t.deg*2-2;i++)
+            if (color[i]==1)
+            {
+                XX[numN]=t.branch[i].x;
+                YY[numN++]=t.branch[i].y;
+            }
+        XX[numN]=pa.x;
+        YY[numN++]=pa.y;
+
+        vector<poi> po;
+        for (i=0;i<numN;i++)
+            po.push_back({XX[i],YY[i],0});
+        sort(po.begin(),po.end(),cmpp);
+        vector<poi>::iterator new_end=unique(po.begin(),po.end(),equpoi);
+        po.erase(new_end,po.end());
+        //printf("-------------%d----------\n",numN-po.size());
+        numN=po.size();
+        for (i=0;i<numN;i++)
+        {
+            XX[i]=po[i].x;
+            YY[i]=po[i].y;
+        }
+        OAflute(numN,XX,YY);
+
+        numN=0;
+        for (i=0;i<t.deg*2-2;i++)
+            if (color[i]==2)
+            {
+                XX[numN]=t.branch[i].x;
+                YY[numN++]=t.branch[i].y;
+            }
+        XX[numN]=pb.x;
+        YY[numN++]=pb.y;
+        
+        po.clear();
+        for (i=0;i<numN;i++)
+            po.push_back({XX[i],YY[i],0});
+        sort(po.begin(),po.end(),cmpp);
+        new_end=unique(po.begin(),po.end(),equpoi);
+        po.erase(new_end,po.end());
+        //printf("-------------%d----------\n",numN-po.size());
+        numN=po.size();
+        for (i=0;i<numN;i++)
+        {
+            XX[i]=po[i].x;
+            YY[i]=po[i].y;
+        }
+        OAflute(numN,XX,YY);
+
         OAMSTedge[++numOAMSTe]={pa,pb};
-        b[++AP]=pa;
-        add(u,AP,disp(b[u],b[AP]));
-        add(AP,u,disp(b[u],b[AP]));
-        b[++AP]=pb;
-        add(v,AP,disp(b[v],b[AP]));
-        add(AP,v,disp(b[v],b[AP]));
-        deledge(v,opedge(j));
-        deledge(u,j);
-        partition(u);
-        partition(v);
-        return;
     }
-    if (num>THRESHOLD)
-    {
-        u=maxidu;
-        j=maxidj;
-        v=e[j];
-        OAMSTedge[++numOAMSTe]={{b[u].x,b[u].y},{b[v].x,b[v].y}};
-        deledge(v,opedge(j));
-        deledge(u,j);
-        partition(u);
-        partition(v);
-        return;
-    }
-    //for (i=0;i<num;i++) printf("partition xy: %d %d %d\n",num,XX[i],YY[i]);
-    OAflute(num,XX,YY);
+        
+}
+int dealedge(Flute::Tree t)
+{
+    int u,i,j,numans,numN=0,cuti;
+    int XX[NP],YY[NP],color[NP];
+    bool obflag=0;
+    poi paa,pbb,pa,pb;
+    OBTree ob;
 
+    Flute::printtree(t);
+
+    for (i=0;i<t.deg*2-2;i++)
+    {
+        if (i==t.branch[i].n) continue;
+        Flute::Branch u=t.branch[i],v=t.branch[t.branch[i].n];    
+        ansob.clear();
+        checkedge({u.x,u.y},{v.x,v.y},1);
+        numans=ansob.size();
+        printf("numans: %d %d\n%d %d\n%d %d\n",i,numans,u.x,u.y,v.x,v.y);
+        if (numans>0)
+        {
+            obflag=1;
+            initOBTreeNode(ob);
+            for (j=0;j<numans;j++)
+            {
+                obs obtem=oo[ansob[j]];
+                ob.xmin=min(obtem.x1,ob.xmin);
+                ob.xmax=max(obtem.x2,ob.xmax);
+                ob.ymin=min(obtem.y1,ob.ymin);
+                ob.ymax=max(obtem.y2,ob.ymax);    
+            }
+            if (ob.xmax-ob.xmin<abs(u.x-v.x))
+            {
+                pa={ob.xmin,ob.ymax};
+                pb={ob.xmax,ob.ymax};
+                if (disp(pa,{u.x,u.y,0})>disp(pb,{u.x,u.y,0}))
+                    swap(pa,pb);
+                paa={ob.xmin,ob.ymin};
+                pbb={ob.xmax,ob.ymin};
+                if (disp(paa,{u.x,u.y,0})>disp(pbb,{u.x,u.y,0}))
+                    swap(paa,pbb);
+                if (disp(paa,{u.x,u.y,0})+disp(pbb,{v.x,v.y,0})<disp(pa,{u.x,u.y,0})+disp(pb,{v.x,v.y,0}))
+                {
+                    pa=paa;
+                    pb=pbb;
+                }
+            }
+            else
+            {
+                pa={ob.xmin,ob.ymin};
+                pb={ob.xmin,ob.ymax};
+                if (disp(pa,{u.x,u.y,0})>disp(pb,{u.x,u.y,0}))
+                    swap(pa,pb);
+                paa={ob.xmax,ob.ymin};
+                pbb={ob.xmax,ob.ymax};
+                if (disp(paa,{u.x,u.y,0})>disp(pbb,{u.x,u.y,0}))
+                    swap(paa,pbb);
+                if (disp(paa,{u.x,u.y,0})+disp(pbb,{v.x,v.y,0})<disp(pa,{u.x,u.y,0})+disp(pb,{v.x,v.y,0}))
+                {
+                    pa=paa;
+                    pb=pbb;
+                }
+            }
+            //printf("papb: %d %d\n%d %d\n",pa.x,pa.y,pb.x,pb.y);
+            cuti=i;
+            break;
+        }    
+    }
+    printf("%d\n",obflag);
+    puts("------------------");
+    if (obflag==0)
+        for (i=0;i<t.deg*2-2;i++)
+        {
+            if (i==t.branch[i].n) continue;
+            Flute::Branch u=t.branch[i],v=t.branch[t.branch[i].n];    
+            poi a={u.x,u.y,0},b={v.x,v.y,0};
+            OAMSTedge[++numOAMSTe]={a,b};
+        }
+    else
+    {
+        initedge();
+        memset(color,0,sizeof(color));
+        for (i=0;i<t.deg*2-2;i++)
+        {   
+            if (i==t.branch[i].n) continue;
+            if (i==cuti) continue;
+            Flute::Branch u=t.branch[i],v=t.branch[t.branch[i].n]; 
+            printf("edge: %d %d\n",i,t.branch[i].n);
+            add(i,t.branch[i].n,0);
+            add(t.branch[i].n,i,0);
+        }
+
+        vector<int> a;
+        a.push_back(cuti);
+        while (!a.empty())
+        {
+            u=*a.begin();
+            color[u]=1;
+            for (j=head[u];j>0;j=nex[j])
+            {
+                if (color[e[j]]!=0) continue;
+                a.push_back(e[j]);
+            }
+            a.erase(a.begin());
+        }
+        a.clear();
+        a.push_back(t.branch[cuti].n);
+        while (!a.empty())
+        {
+            u=*a.begin();
+            color[u]=2;
+            a.erase(a.begin());
+            for (j=head[u];j>0;j=nex[j])
+            {
+                if (color[e[j]]!=0) continue;
+                a.push_back(e[j]);
+            }
+        }
+        for (i=0;i<t.deg*2-2;i++)
+            printf("-------color: %d %d\n",i,color[i]);
+
+        numN=0;
+        for (i=0;i<t.deg*2-2;i++)
+            if (color[i]==1)
+            {
+                XX[numN]=t.branch[i].x;
+                YY[numN++]=t.branch[i].y;
+            }
+        XX[numN]=pa.x;
+        YY[numN++]=pa.y;
+
+        vector<poi> po;
+        for (i=0;i<numN;i++)
+            po.push_back({XX[i],YY[i],0});
+        sort(po.begin(),po.end(),cmpp);
+        vector<poi>::iterator new_end=unique(po.begin(),po.end(),equpoi);
+        po.erase(new_end,po.end());
+        //printf("-------------%d----------\n",numN-po.size());
+        numN=po.size();
+        for (i=0;i<numN;i++)
+        {
+            XX[i]=po[i].x;
+            YY[i]=po[i].y;
+        }
+        OAflute(numN,XX,YY);
+
+        numN=0;
+        for (i=0;i<t.deg*2-2;i++)
+            if (color[i]==2)
+            {
+                XX[numN]=t.branch[i].x;
+                YY[numN++]=t.branch[i].y;
+            }
+        XX[numN]=pb.x;
+        YY[numN++]=pb.y;
+        
+        po.clear();
+        for (i=0;i<numN;i++)
+            po.push_back({XX[i],YY[i],0});
+        sort(po.begin(),po.end(),cmpp);
+        new_end=unique(po.begin(),po.end(),equpoi);
+        po.erase(new_end,po.end());
+        //printf("-------------%d----------\n",numN-po.size());
+        numN=po.size();
+        for (i=0;i<numN;i++)
+        {
+            XX[i]=po[i].x;
+            YY[i]=po[i].y;
+        }
+        OAflute(numN,XX,YY);
+
+        OAMSTedge[++numOAMSTe]={pa,pb};
+    }
+        
+}
+void OAflute(int n,int X[],int Y[])
+{
+    bool obflag=0;
+    poi paa,pbb,pa,pb;
+    OBTree ob;
+    Flute::Tree t,flutetree1,flutetree2;
+
+    t=Flute::flute(n,X,Y,12);
+
+    dealpoint(t);
+    dealedge(t);
+        
 }
 void OAMST()
 {
-    int numans,i,j,k,u,v;
+    int i,j,k;
     int X[NP],Y[NP];
     
-    initedge();
-    mar=0;
-    sort(OPMSTedge+1,OPMSTedge+1+numOPMSTe,cmpedge);
-    for (i=1;i<=numOPMSTe;i++)
-    {
-        //printf("lbz: %d %d\n",OPMSTedge[i].u,OPMSTedge[i].v);
-        u=OPMSTedge[i].u;v=OPMSTedge[i].v;
-        ansob.clear();
-        checkedge({b[u].x,b[u].y},{b[v].x,b[v].y},1);
-        
-        add(u,v,OPMSTedge[i].c);
-        numblock[ee]=ansob.size();
-        add(v,u,OPMSTedge[i].c);
-        numblock[ee]=ansob.size();
-    }
-    memset(siz,0,sizeof(siz));
-    dfs(1);
-    memset(vis,0,sizeof(vis));
-    AP=P;
-    partition(1);
-
+    for (i=1;i<=O;i++)
+        OB[i-1]=i;
+    buildOBTree(1,O);
     for (i=1;i<=P;i++)
     {
         X[i-1]=pp[i].x;
         Y[i-1]=pp[i].y;
     }
-    // OAflute(P,X,Y);
+    OAflute(P,X,Y);
     
-    refineedge(numOAMSTe,OAMSTedge);
-
-    //refinev();
     WL=0;
     for(i=1;i<=numOAMSTe;i++)
         WL+=disp(OAMSTedge[i].u,OAMSTedge[i].v);
-    printf("OAMST WL: %d\n",WL);
-
-    Flute::Tree flutetree=Flute::flute(P,X,Y,12);
-    //Flute::plottree(flutetree);
-
+    printf("WL: %d\n",WL);
     // for (int i=1;i<=5;i++)
     // {
     //     X[i-1]=pp[i].x;
