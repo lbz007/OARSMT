@@ -1,0 +1,5 @@
+# hyperref
+.vscode/
+build/
+*.out
+*.dat
