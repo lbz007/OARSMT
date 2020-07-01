@@ -33,11 +33,35 @@ int main()
     scanf("%d",&O);
     for (i=1;i<=O;i++)
         scanf("%d%d%d%d",&oo[i].x1,&oo[i].y1,&oo[i].x2,&oo[i].y2);
-
+    for (i=1;i<=P;i++)
+    {
+        pp[i].x=-pp[i].x;
+        pp[i].y=-pp[i].y;
+    }
+    for (i=1;i<=O;i++)
+    {
+        oo[i].x1=-oo[i].x1;
+        oo[i].y1=-oo[i].y1;
+        oo[i].x2=-oo[i].x2;
+        oo[i].y2=-oo[i].y2;
+    }
     init();
     OASG();
-
-    for (i=1;i<=P;i++) a[i]=b[i];
+    for (i=1;i<=P;i++)
+    {
+        pp[i].x=-pp[i].x;
+        pp[i].y=-pp[i].y;
+    }
+    for (i=1;i<=O;i++)
+    {
+        oo[i].x1=-oo[i].x1;
+        oo[i].y1=-oo[i].y1;
+        oo[i].x2=-oo[i].x2;
+        oo[i].y2=-oo[i].y2;
+    }
+    init();
+    OASG();
+    for (i=1;i<=P+4*O;i++) a[mp.find(b[i])->second]=b[i];
     /* fi.close(); */
     /* addOASGedge(b[2],b[6]); */
     MTST();

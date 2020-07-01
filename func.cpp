@@ -102,8 +102,7 @@ int find(int x)
 }
 void init()
 {
-    FilePureName = FileFullName.substr(0, FileFullName.rfind("."));
-    n=0;
+    int i,n=0;
     for (i=1;i<=P;i++)
         mp.insert(pair<poi,int>({pp[i].x,pp[i].y,0},++n));
     for (i=1;i<=O;i++)

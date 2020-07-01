@@ -20,6 +20,7 @@ void addOASGedge(poi a,poi b)
         swap(b.x,b.y);
     }
     OASGedge[++numOASGe]={mp.find(a)->second,mp.find(b)->second,disp(a,b)};
+    // OASGedge[++numOASGe]={a.id,b.id,disp(a,b)};
     add(OASGedge[numOASGe].u,OASGedge[numOASGe].v,disp(a,b));
     add(OASGedge[numOASGe].v,OASGedge[numOASGe].u,disp(a,b));
     /* printf("%d %d\n",a.x,b.x); */
@@ -85,10 +86,13 @@ void regionOASG(bool flago)
         while ((*x).x>-INF)
         {
             /* printf("ll: %d %d\n",(*x).x,(*x).y); */
-            if ((*x).x-(*x).y<a[i].x-a[i].y) break;
-            s[++nums]=(*x);
-            if (cblock((*x),a[i])==0 && disp((*x),a[i])<disp(nearestp,a[i]))
-                nearestp=(*x);            
+            if ((*x).x-(*x).y<a[i].x-a[i].y) break;s[++nums]=(*x);
+            if (cblock((*x),a[i])==0)
+            {
+                
+                if (disp((*x),a[i])<disp(nearestp,a[i]))
+                    nearestp=(*x);  
+            }          
             x++;
         }
         if (nearestp.x>-INF)

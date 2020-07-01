@@ -17,7 +17,7 @@ using namespace std;
 const int INF=2100000000;
 const int NP=2010;
 const int N=50000;
-const int M=400000;
+const int M=800000;
 
 struct poi
 {
