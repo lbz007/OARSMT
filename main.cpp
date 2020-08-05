@@ -2,22 +2,20 @@
 
 priority_queue<vert,vector<vert>,cmpheap> heap;
 map<poi,int,cmpset> mp;
-multiset<poi,cmpset> active;
 set<int> bottomo;
 set<int> lefto;
 vector<int> ansob;
 
 string FileFullName,FilePureName;   
-poi p[N],a[N],b[N],pp[N];
-obs o[N],oo[N];
-edge OASGedge[M],MTSTedge[N],OPMSTedge[N],OAMST2edge[N],te[M];
-edge2 OARSTedge[N],OAMSTedge[N],OARSMTedge[N];
-vert v[N];
-OBTree obt[N<<4];
+vector<poi> p,a,b,pp;
+vector<obs> o,oo;
+vector<edge> OASGedge,MTSTedge,OPMSTedge,OAMST2edge,te;
+vector<edge2> OARSTedge,OAMSTedge,OARSMTedge;
+vector<OBTree> obt;
 
 int numOASGe,numMTSTe,numte,numOARSTe,numOAMSTe,numOPMSTe,numOARSMTe,numOAMST2e,mar,i,O,P,AP,n,ee,ee2,WL;
-int nex[M],head[N],e[M],dis[N],parent[N],len[M],root[N],f[N],pre[M],OB[N],siz[N],DIJsource[N];
-int nex2[M],head2[N],e2[M],vis2[N],numblock[N],vis[M];
+vector<int> nex,head,e,dis,parent,len,root,f,pre,OB,siz,DIJsource;
+vector<int> nex2,head2,e2,vis2,numblock,vis;
 
 /* int main(int argc , char* argv[]) */
 int main()
@@ -26,13 +24,17 @@ int main()
     /* FileFullName=Name; */    
     /* ifstream fi(FileFullName,std::ios::in); */
     /* init(); */
-
+    
     scanf("%d",&P);
+    pp.resize(P+1);
     for (i=1;i<=P;i++)
         scanf("%d%d",&pp[i].x,&pp[i].y);
     scanf("%d",&O);
+    oo.resize(O+1);
     for (i=1;i<=O;i++)
         scanf("%d%d%d%d",&oo[i].x1,&oo[i].y1,&oo[i].x2,&oo[i].y2);
+        
+    init(P+O*4+2,16*(P+O*4)+2);
     for (i=1;i<=P;i++)
     {
         pp[i].x=-pp[i].x;
@@ -45,7 +47,7 @@ int main()
         oo[i].x2=-oo[i].x2;
         oo[i].y2=-oo[i].y2;
     }
-    init();
+    init_map();
     OASG();
     for (i=1;i<=P;i++)
     {
@@ -59,11 +61,10 @@ int main()
         oo[i].x2=-oo[i].x2;
         oo[i].y2=-oo[i].y2;
     }
-    init();
+    init_map();
     OASG();
     for (i=1;i<=P+4*O;i++) a[mp.find(b[i])->second]=b[i];
-    /* fi.close(); */
-    /* addOASGedge(b[2],b[6]); */
+
     MTST();
 
     for (i=1;i<=O;i++)

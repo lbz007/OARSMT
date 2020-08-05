@@ -104,8 +104,8 @@ void OARST()
 {
     int ga,ma,maxid,mp,u,v,i,j,r1,r2,dele;
     poi p0,p1,p2;
-    sort(MTSTedge+1,MTSTedge+1+numMTSTe,cmpedge);
-    initedge();
+    sort(MTSTedge.begin()+1,MTSTedge.begin()+1+numMTSTe,cmpedge);
+    initedge(P+4*O,numMTSTe*2);
     for (i=1;i<=numMTSTe;i++)
     {
         u=MTSTedge[i].u;
@@ -177,6 +177,7 @@ void OARST()
                 swap(r1,r2);
             }
             if ((r1==5 && (r2==1 || r2==4)) || (r1==7 && (r2==2 || r2==3)))
+            {
                 if (abs(p1.x-p0.x)<abs(p2.x-p0.x))
                 {
                     OARSTedge[++numOARSTe]={p0,p1};
@@ -188,7 +189,9 @@ void OARST()
                     OARSTedge[++numOARSTe]={p1,{p2.x,p0.y}};
                     OARSTedge[++numOARSTe]={p2,{p2.x,p0.y}};
                 }
+            }
             if ((r1==6 && (r2==1 || r2==2)) || (r1==8 && (r2==3 || r2==4)))
+            {
                 if (abs(p1.y-p0.y)<abs(p2.y-p0.y))
                 {
                     OARSTedge[++numOARSTe]={p0,p1};
@@ -200,6 +203,7 @@ void OARST()
                     OARSTedge[++numOARSTe]={p1,{p0.x,p2.y}};
                     OARSTedge[++numOARSTe]={p2,{p0.x,p2.y}};
                 }
+            }
             continue;
         }
 

@@ -20,7 +20,6 @@ void dfs(int u,int f,int d)
 void OPMST()
 {
     int i,u,v;
-    initedge();
     for (i=1;i<=numMTSTe;i++)
     {
         u=MTSTedge[i].u;v=MTSTedge[i].v;

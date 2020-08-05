@@ -17,10 +17,10 @@ void partition(int x)
     mar++;
     //printf("part x mar: %d %d\n",x,mar);
     //printf("part x: %d %d\n",b[x].x,b[x].y);
-    int sz,maxlen=0,maxidu,maxidj,THRESHOLD;
-    int num=0,numans=0,u,v,i,j,PP,QQ,XX[NP],YY[NP];
+    int sz,maxlen=0,maxidu,maxidj,THRESHOLD=INF;
+    int num=0,numans=0,u,v,i,j;
     bool obflag=0;
-    vector<int> a;
+    vector<int> a,XX,YY;
     obs obtem;
     OBTree ob;
     poi pa,pb;
@@ -54,7 +54,7 @@ void partition(int x)
                 numans=ansob.size();
                 break;
             }
-            if (len[j]>maxlen && sz>2)
+            if (len[j]>maxlen && sz>2 && e[j]<=P)
             {
                 maxlen=len[j];
                 maxidj=j;
@@ -63,8 +63,9 @@ void partition(int x)
             vis[e[j]]=mar;
             a.push_back(e[j]);
         }
-        XX[num]=b[u].x;
-        YY[num++]=b[u].y;
+        XX.push_back(b[u].x);
+        YY.push_back(b[u].y);
+        num++;
         a.erase(a.begin());
     }   
     if (obflag)
@@ -102,7 +103,14 @@ void partition(int x)
         u=maxidu;
         j=maxidj;
         v=e[j];
-        OAMSTedge[++numOAMSTe]={{b[u].x,b[u].y},{b[v].x,b[v].y}};
+        // OAMSTedge[++numOAMSTe]={{b[u].x,b[u].y},{b[v].x,b[v].y}};
+        
+        b[++AP]=b[u];
+        add(v,AP,disp(b[v],b[AP]));
+        add(AP,v,disp(b[v],b[AP]));
+        // b[++AP]=b[v];
+        // add(u,AP,disp(b[u],b[AP]));
+        // add(AP,u,disp(b[u],b[AP]));
         deledge(v,opedge(j));
         deledge(u,j);
         partition(u);
@@ -115,12 +123,12 @@ void partition(int x)
 }
 void OAMST()
 {
-    int numans,i,j,k,u,v;
-    int X[NP],Y[NP];
+    int numans,i,u,v;
+    // int X[NP],Y[NP];
     
-    initedge();
+    initedge(P*2,numOPMSTe*4);
     mar=0;
-    sort(OPMSTedge+1,OPMSTedge+1+numOPMSTe,cmpedge);
+    sort(OPMSTedge.begin()+1,OPMSTedge.begin()+1+numOPMSTe,cmpedge);
     for (i=1;i<=numOPMSTe;i++)
     {
         //printf("lbz: %d %d\n",OPMSTedge[i].u,OPMSTedge[i].v);
@@ -133,17 +141,19 @@ void OAMST()
         add(v,u,OPMSTedge[i].c);
         numblock[ee]=ansob.size();
     }
-    memset(siz,0,sizeof(siz));
+    siz.clear();
+    siz.resize(P+4*O+2,0);
     dfs(1);
-    memset(vis,0,sizeof(vis));
+    vis.clear();
+    vis.resize(P+4*O+2,0);
     AP=P;
     partition(1);
 
-    for (i=1;i<=P;i++)
-    {
-        X[i-1]=pp[i].x;
-        Y[i-1]=pp[i].y;
-    }
+    // for (i=1;i<=P;i++)
+    // {
+    //     X[i-1]=pp[i].x;
+    //     Y[i-1]=pp[i].y;
+    // }
     // OAflute(P,X,Y);
     
     refineedge(numOAMSTe,OAMSTedge);
@@ -154,7 +164,7 @@ void OAMST()
         WL+=disp(OAMSTedge[i].u,OAMSTedge[i].v);
     printf("OAMST WL: %d\n",WL);
 
-    Flute::Tree flutetree=Flute::flute(P,X,Y,12);
+    // Flute::Tree flutetree=Flute::flute(P,X,Y,12);
     //Flute::plottree(flutetree);
 
     // for (int i=1;i<=5;i++)

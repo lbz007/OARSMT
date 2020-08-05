@@ -7,11 +7,11 @@ void dumpgnuplot()
     ofstream fo(file,ios::out);
     for (int i=1;i<=O;i++)
     {
-        fo<<o[i].x1<<' '<<o[i].y2<<endl;
-        fo<<o[i].x1<<' '<<o[i].y1<<endl;
-        fo<<o[i].x2<<' '<<o[i].y1<<endl;
-        fo<<o[i].x2<<' '<<o[i].y2<<endl;
-        fo<<o[i].x1<<' '<<o[i].y2<<endl<<endl;
+        fo<<oo[i].x1<<' '<<oo[i].y2<<endl;
+        fo<<oo[i].x1<<' '<<oo[i].y1<<endl;
+        fo<<oo[i].x2<<' '<<oo[i].y1<<endl;
+        fo<<oo[i].x2<<' '<<oo[i].y2<<endl;
+        fo<<oo[i].x1<<' '<<oo[i].y2<<endl<<endl;
     }
     fo.close();
   

@@ -79,20 +79,62 @@ bool inbox(poi p,poi p1,poi p2)
         return 0;
     return 1;
 }
-void initedge()
+void initedge(int n,int m)
 {
-    memset(head,0,sizeof(head));
-    memset(nex,0,sizeof(nex));
-    memset(pre,0,sizeof(pre));
-    memset(vis,0,sizeof(vis));
+    head.clear();
+    head.resize(n+1,0);
+    nex.clear();
+    nex.resize(m+1,0);
+    pre.clear();
+    pre.resize(m+1,0);
+    vis.clear();
+    vis.resize(n+1,0);
+    e.clear();
+    e.resize(m+1,0);
     ee=0;
 }
-void initedge2()
+void initedge2(int n,int m)
 {
-    memset(head2,0,sizeof(head2));
-    memset(nex2,0,sizeof(nex2));
-    memset(vis2,0,sizeof(vis2));
+    head2.clear();
+    head2.resize(n+1,0);
+    nex2.clear();
+    nex2.resize(m+1,0);
+    vis2.clear();
+    vis2.resize(n+1,0);
+    e2.clear();
+    e2.resize(m+1,0);
     ee2=0;
+}
+void init(int n,int m)
+{
+    numOASGe=numMTSTe=numte=numOARSTe=numOAMSTe=numOPMSTe=numOARSMTe=numOAMST2e=mar=AP=WL=0;
+    a.clear();a.resize(n);
+    b.clear();b.resize(n+n);
+    p.clear();p.resize(P+1);
+    o.clear();o.resize(O+1);
+    OASGedge.clear();OASGedge.resize(m);
+    te.clear();te.resize(m);
+    MTSTedge.clear();MTSTedge.resize(n<<1);
+    OPMSTedge.clear();OPMSTedge.resize(n<<1);
+    OAMST2edge.clear();OAMST2edge.resize(n<<1);
+    OARSTedge.clear();OARSTedge.resize(n<<1);
+    OAMSTedge.clear();OAMSTedge.resize(n<<1);
+    OARSMTedge.clear();OARSMTedge.resize(n<<1);
+    obt.clear();obt.resize(O<<2);
+    numblock.clear();numblock.resize(m,0);
+    nex.clear();nex.resize(m,0);
+    pre.clear();pre.resize(m,0);
+    e.clear();e.resize(m,0);
+    len.clear();len.resize(m,0);
+    vis.clear();vis.resize(n,0);
+    head.clear();head.resize(n,0);
+    dis.clear();dis.resize(n,0);
+    parent.clear();parent.resize(n,0);
+    root.clear();root.resize(n,0);
+    f.clear();f.resize(n,0);
+    OB.clear();OB.resize(n,0);
+    siz.clear();siz.resize(n,0);
+    DIJsource.clear();DIJsource.resize(n,0);
 }
 int find(int x)
 {
@@ -100,20 +142,21 @@ int find(int x)
     parent[x]=find(parent[x]);
     return parent[x];
 }
-void init()
+void init_map()
 {
     int i,n=0;
+    mp.clear();
     for (i=1;i<=P;i++)
         mp.insert(pair<poi,int>({pp[i].x,pp[i].y,0},++n));
     for (i=1;i<=O;i++)
     {
-        mp.insert(pair<poi,int>({oo[i].x1,oo[i].y2,0},++n));
         mp.insert(pair<poi,int>({oo[i].x1,oo[i].y1,0},++n));
+        mp.insert(pair<poi,int>({oo[i].x1,oo[i].y2,0},++n));
         mp.insert(pair<poi,int>({oo[i].x2,oo[i].y1,0},++n));
         mp.insert(pair<poi,int>({oo[i].x2,oo[i].y2,0},++n));
     }
 }
-void refineedge(int &n, edge2 a[])
+void refineedge(int &n, vector<edge2> &a)
 {
     int i;
     vector<edge2> po;

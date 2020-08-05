@@ -35,9 +35,9 @@ void buildOBTree(int s,int k)
         else
             sort(OBtem.begin(),OBtem.end(),cmpoby);
         for (i=0;i<h;i++) OB[i]=OBtem[i];
-        buildOBTree(s*2,h);
+        buildOBTree(s<<1,h);
         for (i=0;i<k-h;i++) OB[i]=OBtem[h+i];
-        buildOBTree(s*2+1,k-h);
+        buildOBTree((s<<1)+1,k-h);
     }
     return;
 }
@@ -52,8 +52,8 @@ void checknode(poi p,int s)
         ansob.push_back(obt[s].a);
         return;
     }
-    checknode(p,s*2);
-    checknode(p,s*2+1);
+    checknode(p,s<<1);
+    checknode(p,(s<<1)+1);
     return ;
 }
 
@@ -84,7 +84,7 @@ void checkedge(poi p1,poi p2,int s)
         ansob.push_back(obt[s].a);
         return;
     }
-    checkedge(p1,p2,s*2);
-    checkedge(p1,p2,s*2+1);
+    checkedge(p1,p2,s<<1);
+    checkedge(p1,p2,(s<<1)+1);
     return ;
 }

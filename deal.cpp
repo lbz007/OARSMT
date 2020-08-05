@@ -51,7 +51,7 @@ bool cmplinkp(blockedge aa,blockedge bb)
 int dealpoint(Flute::Tree t)
 {
     int u,i,j,k,numans,numN=0,cuti,S,T,numlinkp,SS,TT;
-    int XX[NP],YY[NP],color[NP];
+    vector<int> XX(t.deg*2,0),YY(t.deg*2,0),color(t.deg*2,0);
     bool obflag=0;
     poi paa,pbb,pa,pb;
     OBTree ob;
@@ -59,7 +59,7 @@ int dealpoint(Flute::Tree t)
     vector<blockedge> linkp;
     vector<blockedge> linkpo;
     //Flute::printtree(t);
-    //Flute::plottree(t);
+    // Flute::plottree(t);
 
     for (i=0;i<t.deg*2-2;i++)
     {
@@ -161,8 +161,7 @@ int dealpoint(Flute::Tree t)
 
     if (obflag==1)
     {
-        initedge2();
-        memset(color,0,sizeof(color));
+        initedge2(t.deg<<1,t.deg<<2);
         for (i=0;i<t.deg*2-2;i++)
         {   
             Flute::Branch u=t.branch[i],v=t.branch[t.branch[i].n]; 
@@ -270,7 +269,8 @@ int dealpoint(Flute::Tree t)
 int dealedge(Flute::Tree t)
 {
     int u,i,j,numans,numN=0,cuti;
-    int XX[NP],YY[NP],color[NP];
+    // int XX[NP],YY[NP],color[NP];
+    vector<int> XX(t.deg*2,0),YY(t.deg*2,0),color(t.deg*2,0);
     bool obflag=0;
     poi paa,pbb,pa,pb;
     OBTree ob;
@@ -316,8 +316,7 @@ int dealedge(Flute::Tree t)
         }
     if (obflag==1)
     {
-        initedge2();
-        memset(color,0,sizeof(color));
+        initedge2(t.deg<<1,t.deg<<2);
         for (i=0;i<t.deg*2-2;i++)
         {   
             if (i==t.branch[i].n) continue;
@@ -415,15 +414,20 @@ int dealedge(Flute::Tree t)
     }
     return obflag; 
 }
-void OAflute(int n,int X[],int Y[])
+void OAflute(int n,vector<int> &XX,vector<int> &YY)
 {
     //printf("OAflute n: %d\n",n);
+    int X[n],Y[n];
     if (n<=1) return;
     bool obflag=0;
     poi paa,pbb,pa,pb;
     OBTree ob;
     Flute::Tree t,flutetree1,flutetree2;
-
+    for (int i=0;i<n;i++)
+    {
+        X[i]=XX[i];
+        Y[i]=YY[i];
+    }
     t=Flute::flute(n,X,Y,12);
     //dealedge(t);
     //if (dealedge(t)==0)  dealpoint(t);

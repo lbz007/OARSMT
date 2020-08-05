@@ -60,22 +60,21 @@ void regionOASG(bool flago)
 {
     int i,j,nums;
     poi pp,nearestp,s[N];
+    multiset<poi,cmpset> active;
     n=0;
-    active.clear();
     active.insert({-INF,0,0});
     for (i=1;i<=P;i++)
         a[++n]={p[i].x,p[i].y,n};
-    /* if (flago==1) */
-        for (i=1;i<=O;i++)
-        {
-            a[++n]={o[i].x1,o[i].y2,n};
-            a[++n]={o[i].x1,o[i].y1,n};
-            a[++n]={o[i].x2,o[i].y1,n};
-            a[++n]={o[i].x2,o[i].y2,n};
-        }
+    for (i=1;i<=O;i++)
+    {
+        a[++n]={o[i].x1,o[i].y2,n};
+        a[++n]={o[i].x1,o[i].y1,n};
+        a[++n]={o[i].x2,o[i].y1,n};
+        a[++n]={o[i].x2,o[i].y2,n};
+    }
     for (i=1;i<=n;i++)
         b[i]=a[i];
-    sort(a+1,a+1+n,cmp);
+    sort(a.begin()+1,a.begin()+1+n,cmp);
     for (i=1;i<=n;i++)
     {
         nums=0;

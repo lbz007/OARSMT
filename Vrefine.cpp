@@ -8,8 +8,10 @@ void Vrefine()
     mp.clear();
     for (i=1;i<=numOAMSTe;i++)
     {
-        mp.insert(pair<poi,int>(OAMSTedge[i].u,0));
-        mp.insert(pair<poi,int>(OAMSTedge[i].v,0));
+        if (mp.find(OAMSTedge[i].u)==mp.end())
+            mp.insert(pair<poi,int>(OAMSTedge[i].u,0));
+        if (mp.find(OAMSTedge[i].v)==mp.end())
+            mp.insert(pair<poi,int>(OAMSTedge[i].v,0));
     }
     n=0;
     map<poi,int>::iterator it;
@@ -27,8 +29,8 @@ void Vrefine()
         OAMST2edge[numOAMST2e].c=disp(OAMSTedge[i].u,OAMSTedge[i].v);
     }
 
-    sort(OAMST2edge+1,OAMST2edge+1+numOAMST2e,cmpedge);
-    initedge();
+    sort(OAMST2edge.begin()+1,OAMST2edge.begin()+1+numOAMST2e,cmpedge);
+    initedge(n,numOAMST2e*2);
     for (i=1;i<=numOAMST2e;i++)
     {
         u=OAMST2edge[i].u;

@@ -50,7 +50,7 @@ void extendKK()
         if (root[u]!=root[v])
             te[++numte]={u,v,dis[v]+OASGedge[i].c+dis[u]};
     }
-    sort(te+1,te+1+numte,cmpedge);
+    sort(te.begin()+1,te.begin()+1+numte,cmpedge);
     
     for (i=1;i<=numte;i++)
     {

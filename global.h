@@ -12,6 +12,7 @@
 #include <queue>
 #include <cstring>
 #include <cmath>
+#include <vector>
 using namespace std;
 
 const int INF=2100000000;
@@ -67,16 +68,14 @@ struct OBTree
 };
 
 extern string FileFullName,FilePureName;   
-extern poi p[N],a[N],b[N],pp[N];
-extern obs o[N],oo[N];
-extern edge OASGedge[M],MTSTedge[N],OPMSTedge[N],OAMST2edge[N],te[M];
-extern edge2 OARSTedge[N],OAMSTedge[N],OARSMTedge[N];
-extern vert v[N];
-extern OBTree obt[N<<4];
+extern vector<poi> p,a,b,pp;
+extern vector<obs> o,oo;
+extern vector<edge> OASGedge,MTSTedge,OPMSTedge,OAMST2edge,te;
+extern vector<edge2> OARSTedge,OAMSTedge,OARSMTedge;
+extern vector<OBTree> obt;
 
 extern priority_queue<vert,vector<vert>,cmpheap> heap;
 extern map<poi,int,cmpset> mp;
-extern multiset<poi,cmpset> active;
 extern set<int> bottomo;
 extern set<int> lefto;
 extern vector<int> ansob;
@@ -84,8 +83,9 @@ extern vector<int> ansob;
 extern string FileFullName,FilePureName;   
 
 extern int numOASGe,numMTSTe,numte,numOARSTe,numOAMSTe,numOPMSTe,numOARSMTe,numOAMST2e,mar,i,O,P,AP,n,ee,WL,ee2;
-extern int nex[M],head[N],e[M],dis[N],parent[N],len[M],root[N],f[N],pre[M],OB[N],siz[N],DIJsource[N];
-extern int nex2[M],head2[N],e2[M],vis2[N],numblock[N],vis[M];
+// extern int nex[M],head[N],e[M],dis[N],parent[N],len[M],root[N],f[N],pre[M],OB[N],siz[N],DIJsource[N];
+extern vector<int> nex,head,e,dis,parent,len,root,f,pre,OB,siz,DIJsource;
+extern vector<int> nex2,head2,e2,vis2,numblock,vis;
 
 void OASG();
 void OARST();
@@ -94,7 +94,7 @@ void OAMST();
 void OPMST();
 void Vrefine();
 
-void OAflute(int n,int X[],int Y[]);
+void OAflute(int n,vector<int> &XX,vector<int> &YY);
 
 bool cmp(poi a,poi b);
 
@@ -117,10 +117,10 @@ int opedge(int x);
 
 bool inbox(poi p,poi p1,poi p2);
 
-void initedge();
-void initedge2();
-
-void init();
+void init(int n,int m);
+void initedge(int n,int m);
+void initedge2(int n,int m);
+void init_map();
 
 int find(int x);
 
@@ -134,7 +134,7 @@ void checknode(poi p,int s);
 
 void checkedge(poi p1,poi p2,int s);
 
-void refineedge(int &n, edge2 a[]);
+void refineedge(int &n, vector<edge2> &a);
 
 void blockedgepoint(poi u,poi v,obs o,poi &pa,poi &pb);
 
