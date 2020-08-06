@@ -59,7 +59,8 @@ bool cblock(poi aa,poi bb)
 void regionOASG(bool flago)
 {
     int i,j,nums;
-    poi pp,nearestp,s[N];
+    poi pp,nearestp;
+    vector<poi> s(O+P*4+2);
     multiset<poi,cmpset> active;
     n=0;
     active.insert({-INF,0,0});
@@ -114,13 +115,10 @@ void regionOASG(bool flago)
             {
                 if ((*x).x<b[a[i].id-1].x) break;
                 if ((*x).x-(*x).y<=a[i].x-a[i].y && (*x).y<a[i].y)
-                {
-                    active.erase(x);
-                    x--;
-                }
-                x++;
+                    active.erase(x++);
+                else
+                    x++;
             }
-
         }
         active.insert(a[i]);
 
