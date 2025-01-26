@@ -1,5 +1,11 @@
 # OARSMT
+## How to build binary
+mkdir build
+cd build
+cmake ..
+make
 
+## Test result
 01
 OARST WL: 30060<br>
 OPMST WL: 29230<br>
