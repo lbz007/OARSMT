@@ -1,9 +1,9 @@
 # OARSMT
 ## How to build binary
-mkdir build
-cd build
-cmake ..
-make
+mkdir build<br>
+cd build<br>
+cmake ..<br>
+make<br>
 
 ## Test result
 01
